@@ -32,46 +32,45 @@ body {
 }
 
 #start-screen, #game-over-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 100%;
-}
-
-#start-button, #play-again-button {
-    padding: 15px 30px;
-    font-size: 1.2em;
-    font-weight: bold;
-    color: #fff;
-    background: linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%);
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    box-shadow: 0 5px 15px rgba(254, 107, 139, 0.4);
-    transition: all 0.3s ease;
-}
-
-#start-button:hover, #play-again-button:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 25px rgba(254, 107, 139, 0.6);
+    background-color: rgba(255, 255, 255, 0.8);
 }
 
 #unstable-button {
     position: absolute;
     width: 120px;
     height: 50px;
-    background: linear-gradient(45deg, #2196F3 30%, #21CBF3 90%);
-    border: none;
-    border-radius: 25px;
-    cursor: pointer;
+    background-color: #007bff;
     color: white;
-    font-size: 1.1em;
-    box-shadow: 0 5px 15px rgba(33, 150, 243, 0.4), 0 0 0 5px rgba(33, 203, 243, 0.2);
-    transition: all 0.2s ease-in-out;
-    display: none; /* Initially hidden */
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: top 0.3s ease-in-out, left 0.3s ease-in-out;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
 }
 
-#unstable-button:before {
-    content: 'Click Me!';
+#unstable-button:hover {
+    background-color: #0056b3;
 }
+
+button {
+    padding: 10px 20px;
+    font-size: 1.2em;
+    cursor: pointer;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+}
+
+button:hover {
+    background-color: #f0f0f0;
+}
+

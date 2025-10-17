@@ -1,3 +1,4 @@
+
 const gameContainer = document.getElementById('game-container');
 const unstableButton = document.getElementById('unstable-button');
 const startButton = document.getElementById('start-button');
@@ -38,50 +39,58 @@ function moveButtonRandomly() {
     unstableButton.style.top = `${y}px`;
 }
 
+
 /**
- * Finds the corner of the game container that is farthest from the mouse cursor.
+ * Finds a strategic position for the button to move to, adding variety to the movement.
+ * The button will move to one of the top 3 farthest points from the mouse cursor,
+ * including corners and edge midpoints.
  * @param {number} mouseX - The x-coordinate of the mouse.
  * @param {number} mouseY - The y-coordinate of the mouse.
  * @returns {{x: number, y: number}}
  */
-function getFarthestCorner(mouseX, mouseY) {
+function getStrategicPosition(mouseX, mouseY) {
     const containerRect = gameContainer.getBoundingClientRect();
     const buttonRect = unstableButton.getBoundingClientRect();
 
-    const corners = [
+    const width = containerRect.width - buttonRect.width;
+    const height = containerRect.height - buttonRect.height;
+
+    // Define 8 potential target points: 4 corners and 4 edge midpoints
+    const targetPoints = [
         { x: 0, y: 0 }, // Top-left
-        { x: containerRect.width - buttonRect.width, y: 0 }, // Top-right
-        { x: 0, y: containerRect.height - buttonRect.height }, // Bottom-left
-        { x: containerRect.width - buttonRect.width, y: containerRect.height - buttonRect.height } // Bottom-right
+        { x: width, y: 0 }, // Top-right
+        { x: 0, y: height }, // Bottom-left
+        { x: width, y: height }, // Bottom-right
+        { x: width / 2, y: 0 }, // Top-mid
+        { x: width / 2, y: height }, // Bottom-mid
+        { x: 0, y: height / 2 }, // Left-mid
+        { x: width, y: height / 2 }  // Right-mid
     ];
 
-    let farthestCorner = null;
-    let maxDistanceSq = -1;
-
-    // Adjust mouse coordinates to be relative to the game container's viewport position
     const relativeMouseX = mouseX - containerRect.left;
     const relativeMouseY = mouseY - containerRect.top;
 
-    corners.forEach(corner => {
-        const dx = corner.x - relativeMouseX;
-        const dy = corner.y - relativeMouseY;
-        const distanceSq = dx * dx + dy * dy;
-
-        if (distanceSq > maxDistanceSq) {
-            maxDistanceSq = distanceSq;
-            farthestCorner = corner;
-        }
+    // Calculate the distance from the mouse to each target point
+    targetPoints.forEach(point => {
+        const dx = point.x - relativeMouseX;
+        const dy = point.y - relativeMouseY;
+        point.distanceSq = dx * dx + dy * dy;
     });
 
-    return farthestCorner;
+    // Sort points by distance in descending order
+    targetPoints.sort((a, b) => b.distanceSq - a.distanceSq);
+
+    // Randomly pick one of the top 3 farthest points
+    const randomIndex = Math.floor(Math.random() * 3);
+    return targetPoints[randomIndex];
 }
 
 /**
- * Moves the button to the corner farthest from the cursor.
+ * Moves the button strategically based on the cursor's position.
  * @param {MouseEvent} event - The mouse event that triggered the move.
  */
 function moveButtonStrategically(event) {
-    const { x, y } = getFarthestCorner(event.clientX, event.clientY);
+    const { x, y } = getStrategicPosition(event.clientX, event.clientY);
     unstableButton.style.left = `${x}px`;
     unstableButton.style.top = `${y}px`;
 }
@@ -122,19 +131,16 @@ function endGame() {
 }
 
 /**
- * Handles the click on the unstable button.
- * @param {MouseEvent} event
+ * Handles the click on the unstable button, incrementing the score.
  */
-function handleButtonClick(event) {
+function handleButtonClick() {
     score++;
     scoreDisplay.textContent = `Score: ${score}`;
-    moveButtonStrategically(event);
 }
 
 // Event Listeners
 startButton.addEventListener('click', startGame);
 playAgainButton.addEventListener('click', startGame);
 unstableButton.addEventListener('click', handleButtonClick);
+unstableButton.addEventListener('mouseover', moveButtonStrategically);
 
-// The 'mouseover' event listener that made the button impossible to click has been removed
-// to allow for strategic gameplay.
