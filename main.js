@@ -39,63 +39,6 @@ function moveButtonRandomly() {
     unstableButton.style.top = `${y}px`;
 }
 
-
-/**
- * Finds a strategic position for the button to move to, adding variety to the movement.
- * The button will move to one of the top 3 farthest points from the mouse cursor,
- * including corners and edge midpoints.
- * @param {number} mouseX - The x-coordinate of the mouse.
- * @param {number} mouseY - The y-coordinate of the mouse.
- * @returns {{x: number, y: number}}
- */
-function getStrategicPosition(mouseX, mouseY) {
-    const containerRect = gameContainer.getBoundingClientRect();
-    const buttonRect = unstableButton.getBoundingClientRect();
-
-    const width = containerRect.width - buttonRect.width;
-    const height = containerRect.height - buttonRect.height;
-
-    // Define 8 potential target points: 4 corners and 4 edge midpoints
-    const targetPoints = [
-        { x: 0, y: 0 }, // Top-left
-        { x: width, y: 0 }, // Top-right
-        { x: 0, y: height }, // Bottom-left
-        { x: width, y: height }, // Bottom-right
-        { x: width / 2, y: 0 }, // Top-mid
-        { x: width / 2, y: height }, // Bottom-mid
-        { x: 0, y: height / 2 }, // Left-mid
-        { x: width, y: height / 2 }  // Right-mid
-    ];
-
-    const relativeMouseX = mouseX - containerRect.left;
-    const relativeMouseY = mouseY - containerRect.top;
-
-    // Calculate the distance from the mouse to each target point
-    targetPoints.forEach(point => {
-        const dx = point.x - relativeMouseX;
-        const dy = point.y - relativeMouseY;
-        point.distanceSq = dx * dx + dy * dy;
-    });
-
-    // Sort points by distance in descending order
-    targetPoints.sort((a, b) => b.distanceSq - a.distanceSq);
-
-    // Randomly pick one of the top 3 farthest points
-    const randomIndex = Math.floor(Math.random() * 3);
-    return targetPoints[randomIndex];
-}
-
-/**
- * Moves the button strategically based on the cursor's position.
- * @param {MouseEvent} event - The mouse event that triggered the move.
- */
-function moveButtonStrategically(event) {
-    const { x, y } = getStrategicPosition(event.clientX, event.clientY);
-    unstableButton.style.left = `${x}px`;
-    unstableButton.style.top = `${y}px`;
-}
-
-
 /**
  * Starts the game.
  */
@@ -142,5 +85,4 @@ function handleButtonClick() {
 startButton.addEventListener('click', startGame);
 playAgainButton.addEventListener('click', startGame);
 unstableButton.addEventListener('click', handleButtonClick);
-unstableButton.addEventListener('mouseover', moveButtonStrategically);
-
+unstableButton.addEventListener('mouseover', moveButtonRandomly);
